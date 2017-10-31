@@ -8,7 +8,7 @@ A simple tool for labeling object bounding boxes in images, implemented with Pyt
 - 2017.10.30 implemented by phuong.le@dounets.com
 
 **Screenshot:**
-![Label Tool](./ScreenShot.png)
+![Label Tool](./Screenshot.png)
 
 Data Organization
 -----------------
