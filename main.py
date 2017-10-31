@@ -179,6 +179,8 @@ class LabelTool:
         self.btnDel.grid(row=8, column=0, sticky=W + E + N)
         self.btnClear = Button(parent, text='ClearAll', command=self.clearBBox,width=20)
         self.btnClear.grid(row=9, column=0, sticky=W + E + N)
+        self.btnClose = Button(parent,text='Close', command=self.parent.destroy)
+        self.btnClose.grid(row=10, column=0, sticky=W + E + N)
 
     def cat_selected(self):
         self.category=self.v.get()
@@ -243,6 +245,7 @@ class LabelTool:
 
             if not os.path.exists(self.labelfilename):
                 with open(self.labelfilename, 'w') as f:
+                    f.write(os.path.split(self.imagePath)[-1]+"\r\n")
                     f.write("{:^6} {:^6} {:^6}\r\n".format("OX", "OY", "Label"))
 
         except Exception as e:

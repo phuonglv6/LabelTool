@@ -2,8 +2,8 @@ import csv
 import os
 import json
 from tkinter import *
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+# from sklearn.feature_extraction.text import CountVectorizer
+# from sklearn.metrics.pairwise import cosine_similarity
 import subprocess
 import numpy as np
 import cv2
@@ -17,36 +17,36 @@ FILETYPES = ['.bmp', '.dib', '.dcx', '.gif', '.im', '.jpg',
              '.xpm']
 
 class Util:
-    @staticmethod
-    def measure_similarity(input, target):
-        sentences = [input, target]
-        cv = CountVectorizer()
-        cv_fit = cv.fit_transform(sentences)
-        w2v_arr = cv_fit.toarray()
-        w1 = w2v_arr[0].reshape(1, -1)
-        w2 = w2v_arr[1].reshape(1, -1)
-        similarity = cosine_similarity(w1, w2)
-        return similarity[0][0]
-
-    @staticmethod
-    def getfield_from_db(filename, bookingnum, fieldname):
-        data = {}
-        try:
-            with open(filename) as si_data:
-                data = json.load(si_data)
-                dic = json.loads(data[bookingnum])
-                result=dic[fieldname]
-        except IOError:
-            print("Error: File does not appear to exist.")
-            result=""
-        except KeyError:
-            print("Error: Key does not appear to exist.")
-            result=""
-        except Exception as e:
-            print("Error: ", e)
-            result = ""
-        else:
-            return result
+    # @staticmethod
+    # def measure_similarity(input, target):
+    #     sentences = [input, target]
+    #     cv = CountVectorizer()
+    #     cv_fit = cv.fit_transform(sentences)
+    #     w2v_arr = cv_fit.toarray()
+    #     w1 = w2v_arr[0].reshape(1, -1)
+    #     w2 = w2v_arr[1].reshape(1, -1)
+    #     similarity = cosine_similarity(w1, w2)
+    #     return similarity[0][0]
+    #
+    # @staticmethod
+    # def getfield_from_db(filename, bookingnum, fieldname):
+    #     data = {}
+    #     try:
+    #         with open(filename) as si_data:
+    #             data = json.load(si_data)
+    #             dic = json.loads(data[bookingnum])
+    #             result=dic[fieldname]
+    #     except IOError:
+    #         print("Error: File does not appear to exist.")
+    #         result=""
+    #     except KeyError:
+    #         print("Error: Key does not appear to exist.")
+    #         result=""
+    #     except Exception as e:
+    #         print("Error: ", e)
+    #         result = ""
+    #     else:
+    #         return result
 
     @staticmethod
     def filter_matix_by_index(mtx, lstIndx, noColum):
