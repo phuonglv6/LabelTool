@@ -159,17 +159,21 @@ class LabelTool:
         self.lblCategory.grid(row=0, column=0,sticky=W)
         self.v = IntVar()
 
-        self.rdshipper=Radiobutton(parent , text='SHIPPER', variable=self.v,value=0,command=self.cat_selected)
-        self.rdshipper.grid(row=1, column=0,sticky=W,padx=15)
+        self.rdheader=Radiobutton(parent , text='HEADER', variable=self.v,value=0,command=self.cat_selected)
+        self.rdheader.grid(row=1, column=0,sticky=W,padx=15)
 
-        self.rdconsignee=Radiobutton(parent , text='CONSIGNEE', variable=self.v,value=1,command=self.cat_selected)
-        self.rdconsignee.grid(row=2, column=0,sticky=W,padx=15)
+        self.rdshipper=Radiobutton(parent , text='SHIPPER', variable=self.v,value=1,command=self.cat_selected)
+        self.rdshipper.grid(row=2, column=0,sticky=W,padx=15)
 
-        self.rdnotify=Radiobutton(parent , text='NOTIFY', variable=self.v,value=2,command=self.cat_selected)
-        self.rdnotify.grid(row=3, column=0,sticky=W,padx=15)
+        self.rdconsignee=Radiobutton(parent , text='CONSIGNEE', variable=self.v,value=2,command=self.cat_selected)
+        self.rdconsignee.grid(row=3, column=0,sticky=W,padx=15)
 
-        self.rdvesel = Radiobutton(parent, text='VESEL', variable=self.v, value=3,command=self.cat_selected )
-        self.rdvesel.grid(row=4, column=0, sticky=W, padx=15)
+        self.rdnotify=Radiobutton(parent , text='NOTIFY', variable=self.v,value=3,command=self.cat_selected)
+        self.rdnotify.grid(row=4, column=0,sticky=W,padx=15)
+
+        self.rdothers = Radiobutton(parent, text='OTHERS', variable=self.v, value=4,command=self.cat_selected )
+        self.rdothers.grid(row=5, column=0, sticky=W, padx=15)
+
         self.v.set(0)
         self.lb1 = Label(parent, text='Bounding boxes:')
         self.lb1.grid(row=6, column=0,sticky=W)
@@ -242,6 +246,8 @@ class LabelTool:
             self.labelfilename = os.path.join(LabelTool.output_label_files, labelname)
             if not os.path.exists(LabelTool.output_label_files):
                 os.mkdir(LabelTool.output_label_files)
+            if not os.path.exists(LabelTool.output_tesseract_result):
+                os.makedirs(LabelTool.output_tesseract_result)
 
             if not os.path.exists(self.labelfilename):
                 with open(self.labelfilename, 'w') as f:
@@ -273,8 +279,12 @@ class LabelTool:
             rateh=h/1400
             crop_img_temp=im[int(y1*rateh):int((y1+(y2-y1))*rateh),int(x1*ratew):int((x1+(x2-x1))*ratew)]
             imgtemp_path = os.path.join(LabelTool.output_tesseract_result,self.imagename+"_"+str(random.randint(1,1000))+".png")
+
+            if not os.path.exists(LabelTool.output_label_files):
+                os.mkdir(LabelTool.output_label_files)
             if not os.path.exists(LabelTool.output_tesseract_result):
                 os.makedirs(LabelTool.output_tesseract_result)
+
             cv2.imwrite(imgtemp_path, crop_img_temp)
             ocr_result=Util.ocr(imgtemp_path,LabelTool.output_tesseract_result)
             print("ocr: ",ocr_result)
@@ -292,6 +302,7 @@ class LabelTool:
                     f.write("{:^6} {:^6} {:^6}\r\n".format(int(line['left']+line['width']/2), int(line['top']+line['height']/2), category))
         else:
             with open(self.labelfilename, 'w') as f:
+                f.write(os.path.split(self.imagePath)[-1] + "\r\n")
                 f.write("{:^6} {:^6} {:^6}\r\n".format("OX","OY","Label"))
 
     def mouseMove(self, event):
