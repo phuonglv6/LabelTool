@@ -277,9 +277,17 @@ class LabelTool:
             h=im.shape[0]
             ratew=w/1200
             rateh=h/1400
-            crop_img_temp=im[int(y1*rateh):int((y1+(y2-y1))*rateh),int(x1*ratew):int((x1+(x2-x1))*ratew)]
-            imgtemp_path = os.path.join(LabelTool.output_tesseract_result,self.imagename+"_"+str(random.randint(1,1000))+".png")
 
+            x_cropimg=int(x1*ratew)
+            w_cropimg=int((x1+(x2-x1))*ratew)
+            y_cropimg=int(y1*rateh)
+            h_cropimg=int((y1+(y2-y1))*rateh)
+
+            # crop_img_temp=im[int(y1*rateh):int((y1+(y2-y1))*rateh),int(x1*ratew):int((x1+(x2-x1))*ratew)]
+            crop_img_temp=im[y_cropimg:h_cropimg,x_cropimg:w_cropimg]
+
+            imgtemp_path = os.path.join(LabelTool.output_tesseract_result,self.imagename+"_"+str(random.randint(1,1000))+".png")
+            rectpost={"x":x_cropimg,"y":y_cropimg}
             if not os.path.exists(LabelTool.output_label_files):
                 os.mkdir(LabelTool.output_label_files)
             if not os.path.exists(LabelTool.output_tesseract_result):
@@ -291,15 +299,15 @@ class LabelTool:
             if not ocr_result:
                 print("The result of ocr is empty")
             else:
-                self.create_label_file(ocr_result,self.category)
+                self.create_label_file(ocr_result,rectpost,self.category)
 
         self.STATE['click'] = 1 - self.STATE['click']
 
-    def create_label_file(self,lstpos,category):
+    def create_label_file(self,lstpos,rectpos,category):
         if os.path.exists(self.labelfilename):
             with open(self.labelfilename, 'a') as f:
                 for line in lstpos:
-                    f.write("{:^6} {:^6} {:^6}\r\n".format(int(line['left']+line['width']/2), int(line['top']+line['height']/2), category))
+                    f.write("{:^6} {:^6} {:^6}\r\n".format(int(rectpos["x"]+line['left']+line['width']/2), int(rectpos["y"]+line['top']+line['height']/2), category))
         else:
             with open(self.labelfilename, 'w') as f:
                 f.write(os.path.split(self.imagePath)[-1] + "\r\n")
